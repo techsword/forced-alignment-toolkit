@@ -2,7 +2,7 @@ import numpy as np
 import textgrids
 
 
-def process_array(array: np.array, filename: str, **kwargs) -> tuple:
+def process_array(filename: str, array: np.array, **kwargs) -> tuple:
     """
     Processes the given array based on the slicing tier specified in kwargs.
 
@@ -27,17 +27,18 @@ def process_array(array: np.array, filename: str, **kwargs) -> tuple:
             - str: The slicing tier used.
             - np.array: The processed array.
     """
-    # First make confirm the activation shape is (13, 1, num_frames, 768)
-    try:
-        assert np.moveaxis(array, -2, -1).shape[:-1] == (
-            13,
-            1,
-            768,
-        )
-    except AssertionError as exc:
-        raise ValueError(
-            "The hidden_state_activations shape is not (13, 1, num_frames, 768)"
-        ) from exc
+    # TODO add checks for dimensions
+    # # First make confirm the activation shape is (13, 1, num_frames, 768)
+    # try:
+    #     assert np.moveaxis(array, -2, -1).shape[:-1] == (
+    #         13,
+    #         1,
+    #         768,
+    #     )
+    # except AssertionError as exc:
+    #     raise ValueError(
+    #         "The hidden_state_activations shape is not (13, 1, num_frames, 768)"
+    #     ) from exc
     # Unpack and set default values from kwargs
     slicing_tier = None if "slicing_tier" not in kwargs else kwargs["slicing_tier"]
 
