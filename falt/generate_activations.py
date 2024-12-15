@@ -9,6 +9,8 @@ import torchaudio
 from tqdm.auto import tqdm
 from transformers import Wav2Vec2FeatureExtractor, Wav2Vec2Model
 
+from falt_process import process_array
+
 # Set device
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 # Create namedtuple object to store the extracted activations
@@ -55,7 +57,7 @@ def extract_activations(
 
 def slice_activations(
     activation: Activations, **kwargs
-) -> Activations | SlicedActivations:
+):
     """
     Slice activations based on the specified slicing tier.
 
@@ -174,7 +176,8 @@ def save_activations(**kwargs):
     all_activations = []
     for audio_file in tqdm(audio_files):
         activations = extract_activations(audio_file, model, feature_extractor)
-        activations = slice_activations(activations, **kwargs)
+        activations = process_array(*activations, **kwargs)
+        # activations = slice_activations(activations, **kwargs)
         all_activations.append(activations)
 
     if not os.path.exists(savepath):
