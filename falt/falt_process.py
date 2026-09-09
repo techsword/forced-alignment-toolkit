@@ -66,10 +66,6 @@ def process_array(filename: str, array: np.array, **kwargs) -> tuple:
             segment_label.append(word.text)
         return segment_label, slicing_tier, np.stack(sliced_activations, axis=-2)
     elif slicing_tier == "utterance":
-        # return SlicedActivations(
-        #     slicename=filename,
-        #     hidden_state_activations=array.mean(-2),
-        # )
         return (
             [filename],
             slicing_tier,

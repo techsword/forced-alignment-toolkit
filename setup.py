@@ -7,10 +7,10 @@ setup(
     install_requires=[
         "numpy",
         "praat-textgrids",
-        "torch",
-        "torchaudio",
+        "torch>=2.6,<3",
+        "torchaudio>=2.6,<3",
         "tqdm",
-        "transformers",
+        "transformers>=4.48",
     ],
     python_requires=">=3.10",
     author="Gaofei Shen",

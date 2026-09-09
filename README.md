@@ -8,7 +8,7 @@ The preliminary goal of this repo is to create a re-usable tool that can transfo
 
 ## Installation
 
-Requires Python 3.10+.
+Requires Python 3.10+. Editable install pulls in `torch`/`torchaudio` (>=2.6) and `transformers` (>=4.48):
 
 ```bash
 pip install -e .
@@ -22,7 +22,7 @@ pip install git+https://github.com/techsword/forced-alignment-toolkit.git
 
 ### Torch / GPU note
 
-PyTorch is installed from PyPI as `torch>=2.6,<3` (CPU build) so `pip install -e .` works on CPU-only machines. To use a GPU, install a CUDA build of `torch` and `torchaudio` matching your CUDA version *before* installing this package — for example, from https://pytorch.org/get-started/locally/.
+`pip install -e .` resolves `torch>=2.6,<3` and `torchaudio>=2.6,<3` from PyPI. On Linux the default PyPI wheel is CUDA-enabled (it also runs on CPU-only hosts). To pin a specific CUDA or CPU-only build, install `torch`/`torchaudio` from https://pytorch.org/get-started/locally/ *before* installing this package.
 
 ## Usage
 

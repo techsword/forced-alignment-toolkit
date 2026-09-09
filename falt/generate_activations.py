@@ -2,8 +2,6 @@ import glob
 import os
 from collections import namedtuple
 
-import numpy as np
-import textgrids
 import torch
 import torchaudio
 from tqdm.auto import tqdm
@@ -15,9 +13,6 @@ from .falt_process import process_array
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 # Create namedtuple object to store the extracted activations
 Activations = namedtuple("Activations", ["filename", "hidden_state_activations"])
-SlicedActivations = namedtuple(
-    "SlicedActivations", ["slicename", "hidden_state_activations"]
-)
 
 
 # Load audio file
