@@ -73,7 +73,7 @@ def process_array(filename: str, array: np.array, **kwargs) -> tuple:
         return (
             [filename],
             slicing_tier,
-            array.mean(-2).unsqueeze(-2),
+            np.expand_dims(array.mean(-2), axis=-2),
         )
 
     else:
