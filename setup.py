@@ -12,7 +12,7 @@ setup(
         "tqdm",
         "transformers",
     ],
-    python_requires=">=3.8",
+    python_requires=">=3.10",
     author="Gaofei Shen",
     author_email="g.shen@tilburguniversity.edu",
     description="Forced Alignment Toolkit",
