@@ -1,9 +1,62 @@
 # forced-alignment-toolkit
-Using forced alignment timestamp to process time-series data
+
+Using forced alignment timestamps to process time-series data.
 
 ## Preliminary goal
 
 The preliminary goal of this repo is to create a re-usable tool that can transform the (hidden-state) layer output of audio transformer models like wav2vec2 into something similar to a BERT model layerwise output.
+
+## Installation
+
+Requires Python 3.10+.
+
+```bash
+pip install -e .
+```
+
+Or install from git:
+
+```bash
+pip install git+https://github.com/techsword/forced-alignment-toolkit.git
+```
+
+### Torch / GPU note
+
+PyTorch is installed from PyPI as `torch>=2.6,<3` (CPU build) so `pip install -e .` works on CPU-only machines. To use a GPU, install a CUDA build of `torch` and `torchaudio` matching your CUDA version *before* installing this package — for example, from https://pytorch.org/get-started/locally/.
+
+## Usage
+
+The toolkit pools wav2vec2 hidden states into segments defined by a forced-alignment TextGrid. The `.wav` file and its `.TextGrid` file must sit in the same directory.
+
+```python
+from falt import extract_and_save_processed_activations
+
+extract_and_save_processed_activations(
+    modelname="facebook/wav2vec2-base",
+    datapath="examples/wavs",
+    savepath="examples/activations",
+    slicing_tier="phones",  # "words", "phones", "utterance", or None
+    overwrite=True,
+)
+```
+
+This globs every `.wav` under `datapath`, extracts hidden states, slices them by the chosen tier, and saves the result to a `.pt` file under `savepath`. The saved file contains a list of `(labels, slicing_tier, activations)` tuples.
+
+For finer control, use the lower-level functions directly:
+
+```python
+from transformers import Wav2Vec2FeatureExtractor, Wav2Vec2Model
+from falt import extract_activations
+from falt.falt_process import process_array
+
+model = Wav2Vec2Model.from_pretrained("facebook/wav2vec2-base")
+feature_extractor = Wav2Vec2FeatureExtractor.from_pretrained("facebook/wav2vec2-base")
+
+activations = extract_activations("examples/wavs/A2_0.wav", model, feature_extractor)
+labels, tier, sliced = process_array(
+    activations.filename, activations.hidden_state_activations, slicing_tier="phones"
+)
+```
 
 ## Example files
 
