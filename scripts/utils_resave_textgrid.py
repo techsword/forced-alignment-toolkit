@@ -3,6 +3,11 @@
 This is a one-off utility, not part of the installed ``falt`` package. It was
 moved out of ``falt/utils.py`` because nothing in the package imports it.
 
+NOTE: the bundled example data is now LibriSpeech dev-clean (see
+``examples/README.md``), not the Chinese THCHS-30/THA corpus. This script still
+assumes the old ``A2_<n>`` / ``TH<..>`` filenames, so it does NOT apply to the
+current examples.
+
 TODO(maintainer): revisit this script. The source directory it expects,
 ``examples/textgrids/``, was deleted as stale example data. Update the
 ``textgrid_file`` path below to point at confirmed-good TextGrid sources

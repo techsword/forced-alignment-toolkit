@@ -60,7 +60,7 @@ from falt.falt_process import process_array
 model = Wav2Vec2Model.from_pretrained("facebook/wav2vec2-base")
 feature_extractor = Wav2Vec2FeatureExtractor.from_pretrained("facebook/wav2vec2-base")
 
-activations = extract_activations("examples/wavs/A2_0.wav", model, feature_extractor)
+activations = extract_activations("examples/wavs/3752-4944-0058.wav", model, feature_extractor)
 labels, tier, sliced = process_array(
     activations.filename, activations.hidden_state_activations, slicing_tier="phones"
 )
@@ -78,12 +78,32 @@ labels, tier, sliced = process_array(
 
 <!-- ============================================================ -->
 
-Example data structure can be found under `examples`. The examples are taken from the THCHS-30 dataset.
-```
-@misc{THCHS30_2015,
-  title={THCHS-30 : A Free Chinese Speech Corpus},
-  author={Dong Wang, Xuewei Zhang, Zhiyong Zhang},
+<!-- ============================================================
+     DRAFT (for maintainer review) — example provenance + citations.
+     Wording below is a draft; the maintainer finalizes it.
+     ============================================================ -->
+> **DRAFT (for maintainer review).** Example data structure can be found under `examples`. The example audio is taken from the LibriSpeech dev-clean dataset (CC BY 4.0). The forced alignments (the matching `.TextGrid` files) come from the community [`gilkeyio/librispeech-alignments`](https://huggingface.co/datasets/gilkeyio/librispeech-alignments) dataset, which was produced with the Montreal Forced Aligner (MFA). See [`examples/README.md`](examples/README.md) for the full attribution and redistribution terms.
+
+<!-- ============================================================ -->
+
+```bibtex
+@inproceedings{panayotov2015librispeech,
+  title={Librispeech: An ASR corpus based on public domain audio books},
+  author={Panayotov, Vassil and Chen, Guoguo and Povey, Daniel and Khudanpur, Sanjeev},
+  booktitle={2015 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)},
+  pages={5206--5210},
   year={2015},
-  url={http://arxiv.org/abs/1512.01882}
+  organization={IEEE},
+  doi={10.1109/ICASSP.2015.7178964}
+}
+
+@inproceedings{mcauliffe2017montreal,
+  title={Montreal Forced Aligner: Trainable Text-Speech Alignment Using Kaldi},
+  author={McAuliffe, Michael and Socolof, Michaela and Mihuc, Sarah and Wagner, Michael and Sonderegger, Morgan},
+  booktitle={Interspeech},
+  volume={2017},
+  pages={498--502},
+  year={2017},
+  doi={10.21437/Interspeech.2017-1386}
 }
 ```
