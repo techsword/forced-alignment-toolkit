@@ -2,43 +2,43 @@ import numpy as np
 import textgrids
 
 
-def process_array(filename: str, array: np.array, **kwargs) -> tuple:
+def process_array(filename: str, array: np.ndarray, **kwargs) -> tuple:
     """
     Processes the given array based on the slicing tier specified in kwargs.
 
-        array (np.array): The input array with shape (13, 1, num_frames, 768).
-        filename (str): The filename of the corresponding audio file.
-
     Args:
-        array (np.array): _description_
-        filename (str): _description_
+        array (np.ndarray): The input array with shape
+            (n_layers, n_channels, n_frames, hidden_size). Any positive sizes
+            are accepted. For example, a 13-layer model with one channel,
+            100 frames, and a hidden size of 768 has shape (13, 1, 100, 768).
+        filename (str): The filename of the corresponding audio file.
 
     Keyword Args:
         slicing_tier (str, optional): The tier to slice the array by.
             Can be 'words', 'phones', 'utterance', or None. Defaults to None.
 
     Raises:
-        ValueError: If the shape of the input array is not (13, 1, num_frames, 768).
+        ValueError: If the input array is not 4-D or if any dimension is zero.
         NotImplementedError: If the slicing_tier is not 'words', 'phones', 'utterance', or None.
 
     Returns:
         tuple: A tuple containing:
             - list: A list of segment labels or frame indices.
             - str: The slicing tier used.
-            - np.array: The processed array.
+            - np.ndarray: The processed array.
     """
-    # TODO add checks for dimensions
-    # # First make confirm the activation shape is (13, 1, num_frames, 768)
-    # try:
-    #     assert np.moveaxis(array, -2, -1).shape[:-1] == (
-    #         13,
-    #         1,
-    #         768,
-    #     )
-    # except AssertionError as exc:
-    #     raise ValueError(
-    #         "The hidden_state_activations shape is not (13, 1, num_frames, 768)"
-    #     ) from exc
+    if array.ndim != 4:
+        raise ValueError(
+            "Expected a 4-D array with shape "
+            "(n_layers, n_channels, n_frames, hidden_size), "
+            f"but got {array.ndim} dimension(s)."
+        )
+    if any(dim == 0 for dim in array.shape):
+        raise ValueError(
+            "Expected positive dimensions with shape "
+            "(n_layers, n_channels, n_frames, hidden_size), "
+            f"but got shape {array.shape}."
+        )
     # Unpack and set default values from kwargs
     slicing_tier = None if "slicing_tier" not in kwargs else kwargs["slicing_tier"]
 
@@ -66,14 +66,10 @@ def process_array(filename: str, array: np.array, **kwargs) -> tuple:
             segment_label.append(word.text)
         return segment_label, slicing_tier, np.stack(sliced_activations, axis=-2)
     elif slicing_tier == "utterance":
-        # return SlicedActivations(
-        #     slicename=filename,
-        #     hidden_state_activations=array.mean(-2),
-        # )
         return (
             [filename],
             slicing_tier,
-            array.mean(-2).unsqueeze(-2),
+            np.expand_dims(array.mean(-2), axis=-2),
         )
 
     else:

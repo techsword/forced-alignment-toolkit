@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "falt"
+version = "0.1.0"
+description = "Forced Alignment Toolkit"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [
+    { name = "Gaofei Shen", email = "g.shen@tilburguniversity.edu" },
+]
+dependencies = [
+    "numpy",
+    "praat-textgrids",
+    "torch>=2.6,<3",
+    "torchaudio>=2.6,<3",
+    "tqdm",
+    "transformers>=4.48",
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/techsword/forced-alignment-toolkit"
+
+[tool.setuptools]
+packages = ["falt"]

@@ -2,8 +2,6 @@ import glob
 import os
 from collections import namedtuple
 
-import numpy as np
-import textgrids
 import torch
 import torchaudio
 from tqdm.auto import tqdm
@@ -15,9 +13,6 @@ from .falt_process import process_array
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 # Create namedtuple object to store the extracted activations
 Activations = namedtuple("Activations", ["filename", "hidden_state_activations"])
-SlicedActivations = namedtuple(
-    "SlicedActivations", ["slicename", "hidden_state_activations"]
-)
 
 
 # Load audio file
@@ -53,87 +48,6 @@ def extract_activations(
         .cpu()
         .numpy(),
     )
-
-
-# def slice_activations(
-#     activation: Activations, **kwargs
-# ):
-#     """
-#     Slice activations based on the specified slicing tier.
-
-#     Parameters:
-#     activation (object): An object containing hidden_state_activations and filename attributes.
-#     **kwargs: Additional keyword arguments.
-#         - datapath (str): Path to the directory containing the TextGrid files. Default is "examples/wavs".
-#         - slicing_tier (str): The tier to slice the activations by. Can be "words", "phones", "utterance", or None.
-
-#     Returns:
-#     object: Sliced activations based on the slicing tier. If slicing_tier is None, returns the original activation.
-#             If slicing_tier is "words" or "phones", returns a list of SlicedActivations objects.
-#             If slicing_tier is "utterance", returns a single SlicedActivations object.
-
-#     Raises:
-#     AssertionError: If the shape of hidden_state_activations is not (13, 1, num_frames, 768).
-#     ValueError: If slicing_tier is not one of "words", "phones", "utterance", or None.
-#     """
-#     # First make confirm the activation shape is (13, 1, num_frames, 768)
-#     try:
-#         assert np.moveaxis(activation.hidden_state_activations, -2, -1).shape[:-1] == (
-#             13,
-#             1,
-#             768,
-#         )
-#     except AssertionError:
-#         raise AssertionError(
-#             "The hidden_state_activations shape is not (13, 1, num_frames, 768)"
-#         )
-#     # Unpack and set default values from kwargs
-#     slicing_tier = None if "slicing_tier" not in kwargs else kwargs["slicing_tier"]
-
-#     if slicing_tier is None:
-#         return (
-#             list(range(activation.hidden_state_activations.shape[-2])),
-#             "no_slicing",
-#             activation.hidden_state_activations,
-#         )
-#     elif slicing_tier == "words" or slicing_tier == "phones":
-#         # Load textgrid file
-#         textgridfile = activation.filename.replace(".wav", ".TextGrid")
-#         tg = textgrids.TextGrid(textgridfile)
-#         wordtier = tg[slicing_tier]
-#         segment_label, sliced_activations = [], []
-#         for i, word in enumerate(wordtier):
-#             # print(word.text)
-#             # Turn xmins and xmaxs into wav2vec2 timesteps
-#             xmin_frame = int(word.xmin / 0.02)
-#             xmax_frame = int(word.xmax / 0.02)
-#             if xmin_frame == xmax_frame:
-#                 sliced_activations.append(
-#                     activation.hidden_state_activations[:, :, xmin_frame]
-#                 )
-#             else:
-#                 sliced_activations.append(
-#                     activation.hidden_state_activations[
-#                         :, :, xmin_frame:xmax_frame
-#                     ].mean(-2)
-#                 )
-#             segment_label.append(word.text)
-#         return segment_label, slicing_tier, np.stack(sliced_activations, axis = -2)
-#     elif slicing_tier == "utterance":
-#         # return SlicedActivations(
-#         #     slicename=activation.filename,
-#         #     hidden_state_activations=activation.hidden_state_activations.mean(-2),
-#         # )
-#         return (
-#             activation.filename,
-#             slicing_tier,
-#             activation.hidden_state_activations.mean(-2).unsqueeze(-2),
-#         )
-
-#     else:
-#         raise ValueError(
-#             "slicing_tier must be either 'words', 'phones', 'utterance' or None"
-#         )
 
 
 def extract_and_save_processed_activations(**kwargs):
@@ -180,7 +94,6 @@ def extract_and_save_processed_activations(**kwargs):
     for audio_file in tqdm(audio_files):
         activations = extract_activations(audio_file, model, feature_extractor)
         activations = process_array(*activations, **kwargs)
-        # activations = slice_activations(activations, **kwargs)
         all_activations.append(activations)
 
     if not os.path.exists(savepath):
@@ -190,11 +103,13 @@ def extract_and_save_processed_activations(**kwargs):
 
 
 if __name__ == "__main__":
-    kwargs = {
-        "modelname": "facebook/wav2vec2-base",
-        "datapath": "../examples/",
-        "slicing_tier": "phones",
-        "savepath": "../examples/activations",
-        "overwrite": True,
-    }
-    extract_and_save_processed_activations(**kwargs)
+    # Demo: run from the repository root with
+    #   python -m falt.generate_activations
+    # Paths are repo-relative; the model is downloaded from Hugging Face on first use.
+    extract_and_save_processed_activations(
+        modelname="facebook/wav2vec2-base",
+        datapath="examples/wavs",
+        slicing_tier="phones",
+        savepath="examples/activations",
+        overwrite=True,
+    )

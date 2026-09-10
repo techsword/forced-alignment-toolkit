@@ -6,6 +6,9 @@ A toolkit that uses forced alignment TextGrids to pool transformer hidden state 
 # Version of the falt package
 __version__ = "0.1.0"
 
-# Import main components to make them available at package level
-# Add these as your package grows
-from falt.generate_activations import *  # uncomment and modify once you have core modules
+from falt.generate_activations import (
+    extract_activations,
+    extract_and_save_processed_activations,
+)
+
+__all__ = ["extract_activations", "extract_and_save_processed_activations"]
