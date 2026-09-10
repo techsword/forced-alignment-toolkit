@@ -42,6 +42,14 @@ extract_and_save_processed_activations(
 
 This globs every `.wav` under `datapath`, extracts hidden states, slices them by the chosen tier, and saves the result to a `.pt` file under `savepath`. The saved file contains a list of `(labels, slicing_tier, activations)` tuples.
 
+<!-- ============================================================
+     DRAFT (for maintainer review) — first-use model download note.
+     Wording below is a draft; the maintainer finalizes it.
+     ============================================================ -->
+> **DRAFT (for maintainer review).** The wav2vec2 checkpoint (`facebook/wav2vec2-base`) is downloaded from Hugging Face on first use and cached locally. Later runs with the same `modelname` reuse the cache and do not download again.
+
+<!-- ============================================================ -->
+
 For finer control, use the lower-level functions directly:
 
 ```python
@@ -59,6 +67,16 @@ labels, tier, sliced = process_array(
 ```
 
 ## Example files
+
+<!-- ============================================================
+     DRAFT (for maintainer review) — examples/ layout description.
+     Wording below is a draft; the maintainer finalizes it.
+     ============================================================ -->
+> **DRAFT (for maintainer review).** `examples/` layout:
+> - `examples/wavs/` — example audio (`.wav`) and the matching forced-alignment TextGrids (`.TextGrid`).
+> - `examples/activations/` — output directory written by the examples (created on first run; not tracked by git).
+
+<!-- ============================================================ -->
 
 Example data structure can be found under `examples`. The examples are taken from the THCHS-30 dataset.
 ```
