@@ -103,11 +103,13 @@ def extract_and_save_processed_activations(**kwargs):
 
 
 if __name__ == "__main__":
-    kwargs = {
-        "modelname": "facebook/wav2vec2-base",
-        "datapath": "../examples/",
-        "slicing_tier": "phones",
-        "savepath": "../examples/activations",
-        "overwrite": True,
-    }
-    extract_and_save_processed_activations(**kwargs)
+    # Demo: run from the repository root with
+    #   python -m falt.generate_activations
+    # Paths are repo-relative; the model is downloaded from Hugging Face on first use.
+    extract_and_save_processed_activations(
+        modelname="facebook/wav2vec2-base",
+        datapath="examples/wavs",
+        slicing_tier="phones",
+        savepath="examples/activations",
+        overwrite=True,
+    )
