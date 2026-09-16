@@ -7,11 +7,11 @@ def process_array(filename: str, array: np.ndarray, **kwargs) -> tuple:
     Processes the given array based on the slicing tier specified in kwargs.
 
     Args:
+        filename (str): The filename of the corresponding audio file.
         array (np.ndarray): The input array with shape
             (n_layers, n_channels, n_frames, hidden_size). Any positive sizes
             are accepted. For example, a 13-layer model with one channel,
             100 frames, and a hidden size of 768 has shape (13, 1, 100, 768).
-        filename (str): The filename of the corresponding audio file.
 
     Keyword Args:
         slicing_tier (str, optional): The tier to slice the array by.
