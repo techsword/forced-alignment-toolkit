@@ -163,4 +163,4 @@ cython_debug/
 
 # FALT example / activation outputs
 examples/activations/
-*.pt
+examples/activations/*.pt
