@@ -39,7 +39,8 @@ def extract_activations(
         audio_input.squeeze(), return_tensors="pt", sampling_rate=sr
     ).input_values.to(device)
 
-    output = model.forward(input_values, output_hidden_states=True)
+    with torch.inference_mode():
+        output = model.forward(input_values, output_hidden_states=True)
 
     return Activations(
         filename=audio_file,
@@ -98,7 +99,12 @@ def extract_and_save_processed_activations(**kwargs):
 
     if not os.path.exists(savepath):
         os.makedirs(savepath)
-    torch.save(all_activations, output_file)
+    torch.save(
+        all_activations,
+        output_file,
+        pickle_protocol=5,
+        _use_new_zipfile_serialization=False,
+    )
     print(f"Saved activations to {output_file}")
 
 
